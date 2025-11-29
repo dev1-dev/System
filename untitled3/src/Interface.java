@@ -18,7 +18,6 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -170,20 +169,20 @@ public class Interface {
 
         showPass.setGraphic(show);
 
-//        userNameTextField.textProperty().addListener((_, _, _) -> {
-//            try {
-//                checkAutoLogin(userNameTextField, passWordField);
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//        });
-//        passWordField.textProperty().addListener((_, _, _) -> {
-//            try {
-//                checkAutoLogin(userNameTextField, passWordField);
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//        });
+        userNameTextField.textProperty().addListener((_, _, _) -> {
+            try {
+                checkAutoLogin(userNameTextField, passWordField);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        passWordField.textProperty().addListener((_, _, _) -> {
+            try {
+                checkAutoLogin(userNameTextField, passWordField);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         passWordShow.getChildren().addAll(passWordField, passWordTextField, showPass);
         middleNode.getChildren().addAll(login, userName, userNameTextField, passWord, passWordShow);
@@ -194,8 +193,6 @@ public class Interface {
         Scene fig1 = new Scene(fig1nodes);
         mainStage.setScene(fig1);
         mainStage.show();
-        mainStage.hide();
-        new Scene2(mainStage).figure2();
     }
     static void textBoxBinder (TextField node) {
         node.prefHeightProperty().bind(mainStage.heightProperty().multiply(.055));
@@ -206,41 +203,44 @@ public class Interface {
         node.maxWidthProperty().bind(mainStage.widthProperty().multiply(.32));
     }
     private static void checkAutoLogin (TextField textField, PasswordField passwordField) throws IOException{
-        int col = 0;
-        int row = 0;
-        String read;
-        while((read = reader.readLine()) != null) {
-            String[] regex = read.split(",");
-            if (row == 0) {
-                col = regex.length;
+        int rows = 0;
+        int cols = 0;
+        String line;
+
+        BufferedReader reader = new BufferedReader(new FileReader(userDirectory + "/Data/UserDatas/userData.txt"));
+
+        while((line = reader.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (rows == 0) cols = parts.length;
+            rows++;
+        }
+        reader.close();
+        String[][] data = new String[rows][cols];
+        BufferedReader reader2 = new BufferedReader(new FileReader(userDirectory + "/Data/UserDatas/userData.txt"));
+
+        int r = 0;
+        while((line = reader2.readLine()) != null) {
+            String[] parts = line.split(",");
+            for (int c = 0; c < parts.length; c++) {
+                data[r][c] = parts[c];
             }
-            row++;
+            r++;
+        }
+        reader2.close();
+        String inputUser = textField.getText().trim();
+        String inputPass = passwordField.getText().trim();
+
+        for (int i = 0; i < rows; i++) {
+            String user = data[i][0];
+            String pass = data[i][1];
+
+            if (inputUser.equals(user) && inputPass.equals(pass)) {
+                mainStage.hide();
+                new Scene2(mainStage);
+                break;
+            }
         }
 
-//        System.out.println(row + " "+ col+ " "+counter);
-        String[][] datas = new String[row][col];
-        BufferedReader reader1 = new BufferedReader(new FileReader(userDirectory+"/Data/UserDatas/userData.txt"));
-        String read1;
-        int colCounter = 0;
-        while ((read1 = reader1.readLine()) != null) {
-            String[] regex = read1.split(",");
-            for (int i = 0; i < datas.length; i++) {
-                datas[colCounter][i] = regex[i];
-            }
-            colCounter++;
-        }
-        if (textField.getText() != null && passwordField.getText() != null) {
-            String userName;
-            String passWord;
-            for (int i = 0; i < datas.length; i++) {
-                    userName = datas[i][0];
-                    passWord = datas[i][1];
-                    if (textField.getText().equals(userName) && passwordField.getText().equals(passWord)) {
-                        mainStage.hide();
-                        new Scene2(mainStage);
-                    }
-                }
-        }
     }
     static void buttonSize (Button button, Node node) {
         if (node instanceof TextField textField) {
