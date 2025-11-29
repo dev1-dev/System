@@ -1,0 +1,7 @@
+1243252,cheese,5,100,true
+1243253,ham,8,700,false
+1243254,balls,10,1000,true
+1243251,powder,100,45,false
+1243256,four,20,235,false
+1243258,nail,50,50,true
+1243259,paint,70,658,true
