@@ -20,7 +20,7 @@ import javafx.stage.Stage;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-
+//this class is pure human
 public class Interface {
     static Rectangle2D screen = Screen.getPrimary().getBounds();
     final static double screenSizeWidth = screen.getWidth();
@@ -206,18 +206,16 @@ public class Interface {
         int rows = 0;
         int cols = 0;
         String line;
-
         BufferedReader reader = new BufferedReader(new FileReader(userDirectory + "/Data/UserDatas/userData.txt"));
-
         while((line = reader.readLine()) != null) {
             String[] parts = line.split(",");
             if (rows == 0) cols = parts.length;
             rows++;
         }
         reader.close();
+
         String[][] data = new String[rows][cols];
         BufferedReader reader2 = new BufferedReader(new FileReader(userDirectory + "/Data/UserDatas/userData.txt"));
-
         int r = 0;
         while((line = reader2.readLine()) != null) {
             String[] parts = line.split(",");
@@ -229,18 +227,50 @@ public class Interface {
         reader2.close();
         String inputUser = textField.getText().trim();
         String inputPass = passwordField.getText().trim();
-
         for (int i = 0; i < rows; i++) {
             String user = data[i][0];
             String pass = data[i][1];
 
             if (inputUser.equals(user) && inputPass.equals(pass)) {
                 mainStage.hide();
-                new Scene2(mainStage);
+                new Scene2(mainStage).figure2();
                 break;
             }
         }
+        int adminrows = 0;
+        int admincols = 0;
+        String adminline;
+        BufferedReader adminReader = new BufferedReader(new FileReader(userDirectory + "/Data/UserDatas/adminData.txt"));
+        while((adminline = adminReader.readLine()) != null) {
+            String[] parts = adminline.split(",");
+            if (adminrows == 0) admincols = parts.length;
+            adminrows++;
+        }
+        adminReader.close();
 
+        String[][] adminData = new String[adminrows][admincols];
+        BufferedReader adminReader2 = new BufferedReader(new FileReader(userDirectory + "/Data/UserDatas/adminData.txt"));
+        int adminRow = 0;
+        while((adminline = adminReader2.readLine()) != null) {
+            String[] parts = adminline.split(",");
+            for (int i = 0; i < parts.length; i++) {
+                adminData[adminRow][i] = parts[i];
+            }
+            adminRow++;
+        }
+        adminReader2.close();
+        String adminInputUser = textField.getText().trim();
+        String adminInputPass = passwordField.getText().trim();
+        for (int i = 0; i < adminrows; i++) {
+            String user = adminData[i][0];
+            String pass = adminData[i][1];
+
+            if (adminInputUser.equals(user) && adminInputPass.equals(pass)) {
+                mainStage.hide();
+                new Scene3(mainStage).fig3();
+                break;
+            }
+        }
     }
     static void buttonSize (Button button, Node node) {
         if (node instanceof TextField textField) {
